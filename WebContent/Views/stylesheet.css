@@ -1,0 +1,35 @@
+.system-name{
+    background-color: chartreuse;
+    height: 100px;
+}
+
+.system-name h1{
+text-align: center;
+}
+
+.service-name h3{
+
+    background-color: chartreuse;   
+    text-align: center;
+}
+
+.psForm{
+    padding-top: 50px;
+}
+
+.psForm h5{
+    text-align: center;
+}
+ .psForm input{
+     border-radius: 7px;
+ }
+
+ .psForm #btnSave{
+     float: right;
+ }
+ 
+ .container #divPSGrid{
+ 	padding-top : 100px;
+ 
+ }
+ 
