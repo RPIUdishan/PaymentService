@@ -6,7 +6,9 @@ $(document).ready(function(){
 });
 
 //=======================SAVE==================
-$(document).on("click", "btnSave", function(event){
+$(document).on("click", "#btnSave", function(event){
+	
+	console.log("Pressed");
 	
 	//clear alerts
 	$("#alertSuccess").text("");
@@ -26,6 +28,20 @@ $(document).on("click", "btnSave", function(event){
 	}
 	
 	$("ps-form").submit();
+	
+	var type = ($("#hidPSIDSave").val() == "") ? "POST" : "PUT";
+
+	$.ajax({
+		
+		url : "PaymentSchemeAPI",
+		type : type,
+		data : $("#ps-form").serialize(),
+		dataType : "text",
+		complete : function(response, status){
+			onPaymentSchemeSaveComplete(response.responseText, status);
+		}
+		
+	});
 });
 
 function validateForm(){
@@ -93,5 +109,43 @@ function validateForm(){
 	return true;
 
 }
+
+
+
+
+
+
+
+
+
+function onPaymentSchemeSaveComplete(response, status){
+	
+	var resultSet = JSON.parse(response);
+	
+	if(resultSet.status.trim() == "success"){
+		
+		$("#alertSuccess").text("Succesfully Inserted...");
+		$("#alertSuccess").show();		
+		
+		$("#divPSGrid").html(resultSet.data);
+	}
+	
+	else if(resultSet.status.trim() == "error"){
+		
+
+		 $("#alertError").text(resultSet.data);
+		 $("#alertError").show(); 
+		
+	}
+	
+	$("#hidPSIDSave").val("");
+	$("ps-form")[0].reset;
+	
+}
+
+
+
+
+
 
 

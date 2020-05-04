@@ -52,7 +52,7 @@
 					class="form-control form-control-sm" /> <br /> <input
 					id="btnSave" name="btnSave" type="button" value="Save"
 					class="btn btn-outline-success" /> <input type="hidden"
-					id="hidItemIDSave" name="hidItemIDSave" value="" />
+					id="hidPSIDSave" name="hidPSIDSave" value="" />
 			</form>
 		</div>
 		<div id="alertSuccess" class="alert alert-success"></div>

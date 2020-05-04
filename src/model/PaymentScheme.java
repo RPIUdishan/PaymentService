@@ -119,9 +119,12 @@ public class PaymentScheme {
 			
 			output = "Inserted successfully"; 
 			
+			
+			String newPaymentScheme = viewAllPaymentSchemes();
+			output = "{\"status\":\"success\", \"data\": \"" +newPaymentScheme + "\"}"; 
 		} catch (Exception e) {
 		
-			 output = "Error while inserting the Scheme.";
+			 output = "{\"status\":\"error\", \"data\": \"Error while inserting the item.\"}"; 
 			 System.err.println(e.getMessage()); 
 			 
 		}
