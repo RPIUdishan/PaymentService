@@ -5,6 +5,8 @@ $(document).ready(function(){
 	
 });
 
+
+
 //=======================SAVE==================
 $(document).on("click", "#btnSave", function(event){
 	
@@ -31,18 +33,15 @@ $(document).on("click", "#btnSave", function(event){
 	
 	var type = ($("#hidPSIDSave").val() == "") ? "POST" : "PUT";
 
-	$.ajax({
-		
-		url : "PaymentSchemeAPI",
-		type : type,
-		data : $("#ps-form").serialize(),
-		dataType : "text",
-		complete : function(response, status){
-			onPaymentSchemeSaveComplete(response.responseText, status);
-		}
-		
-	});
+	$("#btnSave").click(function(){
+		  $.post("PaymentSchemeAPI", function(data, status){
+		    alert("Data: " + data + "\nStatus: " + status);
+		  });
+		});
 });
+
+
+
 
 function validateForm(){
 	
@@ -50,6 +49,8 @@ function validateForm(){
 	if($("#docID").val().trim() == ""){
 		return "Insert Doctor's ID Number...";
 	}
+	
+	
 	
 	var temp1 = $("#docID").val().trim();
 	if(!$.isNumeric(temp1)){
@@ -85,7 +86,7 @@ function validateForm(){
 	}
 	
 	var temp4 = $("#hospCharge").val().trim();
-	if(!$.inNumeric(temp4)){
+	if(!$.isNumeric(temp4)){
 		return "Incorrect..."
 	}
 	
@@ -99,9 +100,9 @@ function validateForm(){
 	
 	var temp5 = $("#tax").val().trim();
 	
-	if(!$.isNumeri(temp5)){
-		return "Incorrect..."
-	}
+	//if(!$.isNumeric(temp5)){
+		//return "Incorrect..."
+	//}
 	
 	$("#tax").val(parseFloat(temp5).toFixed(2));
 

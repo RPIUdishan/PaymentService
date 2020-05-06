@@ -35,7 +35,7 @@ public class PaymentScheme {
 			if (con == null) { return "Error While connection to database"; }
 			
 			//html table output headings
-			output = "<table border=\"1\">"
+			output = "<table border='1'>"
 					+ "<tr>"
 					+ "<th>ID</th>"
 					+ "<th>Doctor ID</th>"
@@ -63,7 +63,8 @@ public class PaymentScheme {
 					psBean.setHosp_charge(rs.getDouble("hosp_charge"));
 					psBean.setTax(rs.getDouble("tax"));
 
-					output += "<tr><td>"+psBean.getId()+" </td>";
+					
+					output += "<tr><td><input id='hidItemIDUpdate' name='hidItemIDUpdate' type='hidden' value="+psBean.getId()+'>'+psBean.getId()+"</td>";
 					output += "<td>"+psBean.getDoc_id()+"</td>";
 					output += "<td>"+psBean.getHospital_id()+"</td>";
 					output += "<td>"+psBean.getDoc_charge()+"</td>";
@@ -72,10 +73,14 @@ public class PaymentScheme {
 					
 					
 					//buttons in a row
-					output += "<td><input name='btnUpdate' type='button' value='update' class='btn btn-outline-success'></td>"
-							+ "<td><input name='btnRemove' type='button' value='remove' class='btn btn-outline-danger'></td>"		;
+					output += "<td><input id='btnUpdate' name='btnUpdate' , type='button' value='update' class='btnUpdate btn btn-outline-success'></td>"
+							+ "<td><input id='btnRemove' name='btnRemove' , type='button' value='remove' class='btnRemove btn btn-outline-danger' data-itemid = '" +psBean.getId()+"'>"+"</td>";
 					
 			}
+			
+			  con.close();
+			
+			  output += "</table>"; 
 			
 		} catch (Exception e) {
 			
@@ -90,9 +95,9 @@ public class PaymentScheme {
 	}
 	
 	//-------------------------------------insert a payment scheme--------------------------------
-	public String insertPaymentScheme(PaymentSchemeBean psBean) {
-		
+	public String insertPaymentScheme(String docID, String hospitalID, String docCharge, String hospCharge, String tax) {
 		String output = "";
+		
 		
 		try {
 			
@@ -100,19 +105,16 @@ public class PaymentScheme {
 			
 			if(con == null) {return "Error while connecting to the database for inserting.";}
 			
-			String query = "insert into payment_schemes(id, doc_id, hospital_id, doc_charge, hosp_charge, tax)"
-					+ "values(?, ?, ?, ?, ?, ?)"; 
-			
+			String query = "insert into payment_schemes(id,doc_id,hospital_id, doc_charge, hosp_charge, tax) values(?,?,?,?,?,?)";
 			
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			
-			//value binding
 			preparedStatement.setInt(1, 0);
-			preparedStatement.setInt(2, psBean.getDoc_id());
-			preparedStatement.setInt(3, psBean.getHospital_id());
-			preparedStatement.setDouble(4, psBean.getDoc_charge());
-			preparedStatement.setDouble(5, psBean.getHosp_charge());
-			preparedStatement.setDouble(6, psBean.getTax()); // changed
+			preparedStatement.setInt(2, Integer.parseInt(docID));
+			preparedStatement.setInt(3, Integer.parseInt(hospitalID));
+			preparedStatement.setDouble(4, Double.parseDouble(docCharge));
+			preparedStatement.setDouble(5, Double.parseDouble(hospCharge));
+			preparedStatement.setDouble(6, Double.parseDouble(tax));
 			
 			preparedStatement.execute();
 			con.close();
@@ -135,10 +137,10 @@ public class PaymentScheme {
 	}
 	
 	//------------------------------delete a payment scheme----------------------------------
-	public String deletePayementScheme(PaymentSchemeBean psBean){
+	public String deletePayementScheme(String id){
 	
 		String output = "";
-		
+			
 		try{
 			
 		Connection con = dbCon.connect();
@@ -150,13 +152,17 @@ public class PaymentScheme {
 		
 		PreparedStatement preparedStatement = con.prepareStatement(query);
 		
-		preparedStatement.setInt(1, psBean.getId());
+		preparedStatement.setInt(1, Integer.parseInt(id));
 		
 		preparedStatement.execute();
 		
+		
+		
 		con.close();
 		
-		output = "Succefully Deleted, Payment Scheme ID : " +psBean.getId();
+		String newPaymentScheme = viewAllPaymentSchemes();
+		
+		output = "{\"status\":\"success\", \"data\": \"" +newPaymentScheme + "\"}"; 
 				
 		}
 		catch (Exception e) {
@@ -170,10 +176,10 @@ public class PaymentScheme {
 	
 	
 	//------------------------------------ update the payment scheme data-------------------------------------------------------
-	public String updatePaymentScheme(PaymentSchemeBean psBean) {
+	public String updatePaymentScheme(String id,String docID, String hospitalID, String docCharge, String hospCharge, String tax) {
 		
 		String output = "";
-		
+	
 		try {
 			
 			Connection con = dbCon.connect();
@@ -185,22 +191,24 @@ public class PaymentScheme {
 			
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 
-			preparedStatement.setInt(1, psBean.getDoc_id());
-			preparedStatement.setInt(2, psBean.getHospital_id());			
-			preparedStatement.setDouble(3, psBean.getDoc_charge());
-			preparedStatement.setDouble(4, psBean.getHosp_charge());
-			preparedStatement.setDouble(5, psBean.getTax());
-			preparedStatement.setInt(6, psBean.getId());
-			
+			preparedStatement.setInt(1, Integer.parseInt(docID));
+			preparedStatement.setInt(2, Integer.parseInt(hospitalID));
+			preparedStatement.setDouble(3, Double.parseDouble(docCharge));
+			preparedStatement.setDouble(4, Double.parseDouble(hospCharge));
+			preparedStatement.setDouble(5, Double.parseDouble(tax));
+			preparedStatement.setDouble(6, Double.parseDouble(id));
 			
 		preparedStatement.execute();
 		con.close();
 		
-		output = "Update Succesfully";
+		
+		String newPS = viewAllPaymentSchemes();
+		output = "{\"status\":\"success\", \"data\": \"" +newPS + "\"}"; 
+		
 			
 		} catch (Exception e) {
 			
-			 output = "Error while updating the item.";
+			 output = "{\"status\":\"error\", \"data\": \"Error while updating the item.\"}"; 
 			 System.err.println(e.getMessage()); 
 		}
 		
