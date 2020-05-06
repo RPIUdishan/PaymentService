@@ -1,4 +1,4 @@
-###payment_schemes table
+################payment_schemes table
 create table payment_schemes (
 	id int primary key auto_increment, 
     doc_id int not null,
